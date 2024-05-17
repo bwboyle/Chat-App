@@ -1,12 +1,12 @@
 const { createMessage } = require('../controllers/messageController');
+const Message = require('../models/Message');
 
 const chatSocket = (io) => {
    io.on('connection', (socket) => {
       console.log('New client connected');
 
       // Send chat history
-      socket.on('loadMessages', async () => {
-         const messages = await Message.find().sort({ timestamp: 1 });
+      Message.find().sort({ timestamp: 1 }).then((messages) => {
          socket.emit('chatHistory', messages);
       });
 
