@@ -1,13 +1,16 @@
-const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const express = require('express');
 const cors = require('cors');
 const messageRoutes = require('./routes/messageRoutes');
+const authRoutes = require('./routes/authRoutes');
 const http = require('http');
 const chatSocket = require('./sockets/chat');
 const { Server } = require('socket.io');
+const passport = require('passport');
+const session = require('express-session');
 
-dotenv.config();
+require('dotenv').config();
+require('./config/passport');
 
 // MongoDB connection
 connectDB();
@@ -18,8 +21,20 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// API routes
+// Session middleware
+app.use(session({
+   secret: process.env.SESSION_SECRET,
+   resave: false,
+   saveUninitialized: false
+}));
+
+// Passport middleware
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Routes
 app.use('/api', messageRoutes);
+app.use('/auth', authRoutes);
 
 // Configure server
 const server = http.createServer(app);
