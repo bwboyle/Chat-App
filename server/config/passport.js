@@ -13,7 +13,7 @@ passport.use(new GoogleStrategy({
          user = await User.create({
             googleId: profile.id,
             displayName: profile.displayName,
-            email: profiles.emails[0].value,
+            email: profile.emails[0].value,
          });
       }
       return done(null, user)

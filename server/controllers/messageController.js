@@ -12,8 +12,7 @@ const getMessages = async (req, res) => {
 
 const createMessage = async (data) => {
    try {
-      const newMessage = new Message(data);
-      await newMessage.save();
+      const newMessage = await Message.create(data);
    } catch (error) {
       console.error('Error creating message', error);
    }

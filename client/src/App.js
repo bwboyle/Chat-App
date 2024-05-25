@@ -5,24 +5,32 @@ import Login from './components/Login';
 export default function App() {
    const [user, setUser] = useState(null);
 
-   useEffect(() => {
+   const fetchUser = async () => {
+      await fetch('http://localhost:8080/auth/current_user', {
+         method: 'GET',
+         credentials: 'include'
+      })
+         .then(res => res.json())
+         .then(data => {
+            setUser(data);
+         })
+         .catch(error => console.log(error));
+   }
 
+   useEffect(() => {
+      fetchUser();
    }, []);
 
    if (!user) {
       return <Login />
    }
 
-   const handleLogout = async () => {
-
-   }
 
    return (
       <div>
-         <Chat />
-         <br />
-         <p>Logged in as {user.email}</p>
-         <button onClick={handleLogout}>Log out</button>
+         <Chat user={user} />
+
+         <p>Logged in as {user.displayName}</p>
       </div>
    )
 }

@@ -1,18 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 
 const socket = io('http://localhost:8080');
 
-export default function Chat() {
+export default function Chat({ user }) {
    const [message, setMessage] = useState('');
    const [messages, setMessages] = useState([]);
-   const [username, setUsername] = useState('');
 
+   const sendMessage = () => {
+      if (message.trim()) {
+         const displayName = user.displayName;
+         const newMessage = { displayName, message };
+         socket.emit('sendMessage', newMessage);
+         setMessage('');
+      }
+   }
 
    useEffect(() => {
-      // const user = window.prompt('Enter your username');
-      setUsername('test_user');
-
       socket.on('chatHistory', (chatHistory) => {
          setMessages(chatHistory)
       });
@@ -25,15 +29,8 @@ export default function Chat() {
          socket.off('chatHistory');
          socket.off('receiveMessage');
       }
-   }, []);
+   }, [])
 
-   const sendMessage = () => {
-      if (message.trim()) {
-         const newMessage = { username, message };
-         socket.emit('sendMessage', newMessage);
-         setMessage('');
-      }
-   };
 
    return (
       <div>
@@ -41,7 +38,7 @@ export default function Chat() {
          <div>
             {messages.map((msg, index) => (
                <div key={index}>
-                  <strong>{msg.username}</strong>: {msg.message}
+                  <strong>{msg.displayName}</strong>: {msg.message}
                </div>
             ))}
          </div>
