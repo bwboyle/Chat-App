@@ -6,9 +6,15 @@ const chatSocket = (io) => {
       console.log('New client connected');
 
       // Send chat history
-      Message.find().sort({ timestamp: 1 }).then((messages) => {
-         socket.emit('chatHistory', messages);
-      });
+      Message.find()
+         .sort({ timestamp: 1 })
+         .populate('user')
+         .then((messages) => {
+            socket.emit('chatHistory', messages);
+         })
+         .catch((error) => {
+            console.error('Error fetching messages:', error)
+         });
 
       // Listen for new mesages
       socket.on('sendMessage', (data) => {

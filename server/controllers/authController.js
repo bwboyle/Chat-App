@@ -19,9 +19,4 @@ exports.logout = (req, res) => {
 
 exports.currentUser = (req, res) => {
    res.json(req.user ? req.user : null);
-   // if (req.user) {
-   //    res.json(req.user);  // Ensure a proper JSON response is sent
-   // } else {
-   //    res.json({ error: 'Not authenticated' });  // Handle case where user is not authenticated
-   // }
 }

@@ -25,7 +25,8 @@ export default function App() {
    useEffect(() => {
       fetchUser();
       socket.on('chatHistory', (chatHistory) => {
-         setMessages(chatHistory)
+         console.log(chatHistory);
+         setMessages(chatHistory);
       });
 
       socket.on('receiveMessage', (message) => {
@@ -56,9 +57,6 @@ export default function App() {
       <div>
          <Navbar onLogout={handleLogout} />
          <Chat user={user} messages={messages} />
-
-         {/* <p>Logged in as {user.displayName}</p>
-         <button onClick={handleLogout}>Logout</button> */}
       </div>
    )
 }

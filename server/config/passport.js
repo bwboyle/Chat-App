@@ -14,6 +14,7 @@ passport.use(new GoogleStrategy({
             googleId: profile.id,
             displayName: profile.displayName,
             email: profile.emails[0].value,
+            photoURL: profile.photos[0].value,
          });
       }
       return done(null, user)

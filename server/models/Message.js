@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
+const User = require('./User');
 
 const messageSchema = new mongoose.Schema({
-   displayName: { type: String, required: true },
+   user: { type: mongoose.ObjectId, ref: 'User' },
    message: { type: String, required: true },
    timestamp: { type: Date, default: Date.now }
 });

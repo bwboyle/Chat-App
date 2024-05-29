@@ -1,43 +1,57 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Box, TextField, IconButton, InputAdornment } from "@mui/material";
 import SendIcon from '@mui/icons-material/Send';
 import io from 'socket.io-client';
+import MessageBox from './MessageBox';
 
 const socket = io('http://localhost:8080');
 
 export default function Chat({ user, messages }) {
    const [message, setMessage] = useState('');
+   const ref = useRef(null);
+
+   // Automatically scroll to bottom of chat list
+   useEffect(() => {
+      const container = ref.current;
+      if (container && messages.length > 0) {
+         container.scrollTop = container.scrollHeight;
+      }
+   }, [messages])
+
 
    const sendMessage = () => {
-      console.log(message);
       if (message.trim()) {
-         const displayName = user.displayName;
-         const newMessage = { displayName, message };
-         socket.emit('sendMessage', newMessage);
+         socket.emit('sendMessage', { user, message });
          setMessage('');
-         console.log('Message sent')
       }
    }
 
    return (
-      <Box
-         display='flex'
-         flexDirection='column'
-         justifyContent='center'
-         p={4}
-      >
+      <Box sx={{
+         margin: '12px'
+      }}>
+
          {/* Chat history */}
-         <Box sx={{ marginBottom: '20px' }}>
+         <Box
+            ref={ref}
+            sx={{
+               display: 'flex',
+               flexDirection: 'column',
+               height: '70vh',
+               overflowY: 'auto',
+               marginY: '40px',
+            }}
+         >
             {messages.map((msg, index) => (
-               <Box key={index}>
-                  <strong>{msg.displayName}</strong>: {msg.message}
-               </Box>
+               <MessageBox key={index} msg={msg} user={user} />
             ))}
          </Box>
+
          {/* Message input */}
          <TextField
             label='Type a message...'
             variant='outlined'
+            value={message}
             onChange={(e) => setMessage(e.target.value)}
             fullWidth
             onKeyDown={(e) => e.key === 'Enter' ? sendMessage() : null}
@@ -52,24 +66,5 @@ export default function Chat({ user, messages }) {
             }}
          />
       </Box>
-      // <div>
-      //    {/* Chat history */}
-      //    <div>
-      //       {messages.map((msg, index) => (
-      //          <div key={index}>
-      //             <strong>{msg.displayName}</strong>: {msg.message}
-      //          </div>
-      //       ))}
-      //    </div>
-
-      //    {/* Message input */}
-      //    <input
-      //       value={message}
-      //       onChange={(e) => setMessage(e.target.value)}
-      //       onKeyPress={(e) => e.key === 'Enter' ? sendMessage() : null}
-      //       placeholder='Type a message...'
-      //    />
-      //    <button onClick={sendMessage}>Send</button>
-      // </div>
    )
 }
