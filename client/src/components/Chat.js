@@ -1,56 +1,75 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { Box, TextField, IconButton, InputAdornment } from "@mui/material";
+import SendIcon from '@mui/icons-material/Send';
 import io from 'socket.io-client';
 
 const socket = io('http://localhost:8080');
 
-export default function Chat({ user }) {
+export default function Chat({ user, messages }) {
    const [message, setMessage] = useState('');
-   const [messages, setMessages] = useState([]);
 
    const sendMessage = () => {
+      console.log(message);
       if (message.trim()) {
          const displayName = user.displayName;
          const newMessage = { displayName, message };
          socket.emit('sendMessage', newMessage);
          setMessage('');
+         console.log('Message sent')
       }
    }
 
-   useEffect(() => {
-      socket.on('chatHistory', (chatHistory) => {
-         setMessages(chatHistory)
-      });
-
-      socket.on('receiveMessage', (message) => {
-         setMessages(prevMessages => [...prevMessages, message]);
-      });
-
-      return () => {
-         socket.off('chatHistory');
-         socket.off('receiveMessage');
-      }
-   }, [])
-
-
    return (
-      <div>
+      <Box
+         display='flex'
+         flexDirection='column'
+         justifyContent='center'
+         p={4}
+      >
          {/* Chat history */}
-         <div>
+         <Box sx={{ marginBottom: '20px' }}>
             {messages.map((msg, index) => (
-               <div key={index}>
+               <Box key={index}>
                   <strong>{msg.displayName}</strong>: {msg.message}
-               </div>
+               </Box>
             ))}
-         </div>
-
+         </Box>
          {/* Message input */}
-         <input
-            value={message}
+         <TextField
+            label='Type a message...'
+            variant='outlined'
             onChange={(e) => setMessage(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' ? sendMessage() : null}
-            placeholder='Type a message...'
+            fullWidth
+            onKeyDown={(e) => e.key === 'Enter' ? sendMessage() : null}
+            InputProps={{
+               endAdornment: (
+                  <InputAdornment position='end'>
+                     <IconButton color='primary' onClick={sendMessage}>
+                        <SendIcon />
+                     </IconButton>
+                  </InputAdornment>
+               )
+            }}
          />
-         <button onClick={sendMessage}>Send</button>
-      </div>
+      </Box>
+      // <div>
+      //    {/* Chat history */}
+      //    <div>
+      //       {messages.map((msg, index) => (
+      //          <div key={index}>
+      //             <strong>{msg.displayName}</strong>: {msg.message}
+      //          </div>
+      //       ))}
+      //    </div>
+
+      //    {/* Message input */}
+      //    <input
+      //       value={message}
+      //       onChange={(e) => setMessage(e.target.value)}
+      //       onKeyPress={(e) => e.key === 'Enter' ? sendMessage() : null}
+      //       placeholder='Type a message...'
+      //    />
+      //    <button onClick={sendMessage}>Send</button>
+      // </div>
    )
 }
