@@ -1,15 +1,14 @@
 import React from 'react'
-import { Box, Avatar, Typography } from '@mui/material'
+import { Box, Avatar, Typography } from '@mui/material';
+import Moment from 'react-moment';
 
 export default function MessageBox({ msg, user }) {
-   const displayName = msg.user.displayName;
-   const timestamp = msg.timestamp;
-
-   console.log(timestamp);
+   const timestamp = msg.timestamp ?? new Date();
 
    return (
       <Box sx={{
          display: 'flex',
+         flexDirection: msg.user.googleId === user.googleId ? 'row' : 'row-reverse',
          alignItems: 'center',
          alignSelf: msg.user.googleId === user.googleId ? 'flex-end' : 'flex-start',
          flexGrow: 0,
@@ -20,15 +19,10 @@ export default function MessageBox({ msg, user }) {
          bgcolor: msg.user.googleId === user.googleId ? 'primary.main' : 'secondary.main',
          color: msg.user.googleId === user.googleId ? 'white' : 'default'
       }}>
-         <Avatar
-            alt={msg.user.dislayName}
-            src={msg.user.photoURL}
-            sx={{ width: 32, height: 32 }}
-         />
          <Box sx={{
             display: 'flex',
             flexDirection: 'column',
-            marginLeft: '12px'
+            marginX: '12px',
          }}>
             <Typography
                variant="subtitle1"
@@ -41,9 +35,14 @@ export default function MessageBox({ msg, user }) {
                component="div"
                sx={{ color: msg.user.googleId === user.googleId ? 'grey.300' : 'default' }}
             >
-               {displayName} • {timestamp ?? 'Just now'}
+               <Moment format="MMMM Do, h:mm a">{timestamp}</Moment>
             </Typography>
          </Box>
+         <Avatar
+            alt={msg.user.dislayName}
+            src={msg.user.photoURL}
+            sx={{ width: 32, height: 32 }}
+         />
       </Box >
    )
 }
