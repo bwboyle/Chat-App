@@ -28,15 +28,22 @@ export default function Chat({ user, messages }) {
    }
 
    return (
-      <Box p={4} sx={{ overflowY: 'hidden' }}>
+      <Box
+         mx={4}
+         sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            overflowY: 'hidden',
+         }}>
 
          {/* Chat history */}
          < Box
             ref={ref}
+            my={4}
             sx={{
                display: 'flex',
                flexDirection: 'column',
-               height: '65vh',
+               height: '70vh',
                overflowY: 'scroll',
                '::-webkit-scrollbar': { // Hide scrollbar
                   display: 'none',
@@ -79,8 +86,7 @@ export default function Chat({ user, messages }) {
                   borderRadius: '20px',  // Adjust the value as needed
                },
             }}
-            sx={{ marginTop: '50px', borderRadius: '20px' }}
-            fullWidth
+            sx={{ borderRadius: '20px' }}
          />
       </Box >
    )
