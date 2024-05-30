@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Box, TextField, IconButton, InputAdornment } from "@mui/material";
 import SendIcon from '@mui/icons-material/Send';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
 import io from 'socket.io-client';
 import MessageBox from './MessageBox';
 
@@ -27,44 +28,60 @@ export default function Chat({ user, messages }) {
    }
 
    return (
-      <Box sx={{
-         margin: '12px'
-      }}>
+      <Box p={4} sx={{ overflowY: 'hidden' }}>
 
          {/* Chat history */}
-         <Box
+         < Box
             ref={ref}
             sx={{
                display: 'flex',
                flexDirection: 'column',
-               height: '70vh',
-               overflowY: 'auto',
-               marginY: '40px',
+               height: '65vh',
+               overflowY: 'scroll',
+               '::-webkit-scrollbar': { // Hide scrollbar
+                  display: 'none',
+               },
+               msOverflowStyle: 'none',  // IE and Edge
+               scrollbarWidth: 'none',   // Firefox
             }}
          >
-            {messages.map((msg, index) => (
-               <MessageBox key={index} msg={msg} user={user} />
-            ))}
-         </Box>
+            {
+               messages.map((msg, index) => (
+                  <MessageBox key={index} msg={msg} user={user} />
+               ))
+            }
+         </Box >
 
          {/* Message input */}
-         <TextField
+         < TextField
             label='Type a message...'
-            variant='outlined'
+            variant='filled'
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            fullWidth
             onKeyDown={(e) => e.key === 'Enter' ? sendMessage() : null}
             InputProps={{
                endAdornment: (
-                  <InputAdornment position='end'>
-                     <IconButton color='primary' onClick={sendMessage}>
-                        <SendIcon />
-                     </IconButton>
-                  </InputAdornment>
-               )
+                  <>
+                     <InputAdornment position='end'>
+                        <IconButton>
+                           <AttachFileIcon />
+                        </IconButton>
+                     </InputAdornment>
+                     <InputAdornment position='end'>
+                        <IconButton onClick={sendMessage}>
+                           <SendIcon />
+                        </IconButton>
+                     </InputAdornment>
+                  </>
+               ),
+               disableUnderline: true,
+               sx: {
+                  borderRadius: '20px',  // Adjust the value as needed
+               },
             }}
+            sx={{ marginTop: '50px', borderRadius: '20px' }}
+            fullWidth
          />
-      </Box>
+      </Box >
    )
 }

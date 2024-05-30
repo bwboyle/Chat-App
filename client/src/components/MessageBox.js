@@ -13,11 +13,12 @@ export default function MessageBox({ msg, user }) {
          alignItems: 'center',
          alignSelf: msg.user.googleId === user.googleId ? 'flex-end' : 'flex-start',
          flexGrow: 0,
-         maxWidth: '50%',
+         maxWidth: '80%',
          padding: '12px',
          borderRadius: 5,
-         marginBottom: '12px',
-         bgcolor: msg.user.googleId === user.googleId ? 'primary.main' : 'grey.300',
+         marginBottom: '20px',
+         bgcolor: msg.user.googleId === user.googleId ? 'primary.main' : 'secondary.main',
+         color: msg.user.googleId === user.googleId ? 'white' : 'default'
       }}>
          <Avatar
             alt={msg.user.dislayName}
@@ -32,14 +33,13 @@ export default function MessageBox({ msg, user }) {
             <Typography
                variant="subtitle1"
                component="div"
-               sx={{ color: msg.user.googleId === user.googleId ? 'white' : 'black' }}
             >
                {msg.message}
             </Typography>
             <Typography
                variant="caption"
                component="div"
-               sx={{ color: msg.user.googleId === user.googleId ? 'grey.300' : 'grey.700' }}
+               sx={{ color: msg.user.googleId === user.googleId ? 'grey.300' : 'default' }}
             >
                {displayName} • {timestamp ?? 'Just now'}
             </Typography>
