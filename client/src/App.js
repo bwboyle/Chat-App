@@ -5,71 +5,71 @@ import Navbar from './components/Navbar';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { lightTheme, darkTheme } from './theme';
-import io from 'socket.io-client';
 
-const socket = io('http://localhost:8080');
+import { useSelector } from 'react-redux'
 
 export default function App() {
-   const [user, setUser] = useState(null);
+   const user = useSelector((state) => state.auth.user);
+   console.log(user);
    const [messages, setMessages] = useState([]);
 
-   // Theme state
-   const savedTheme = localStorage.getItem('theme') === 'dark';
-   const [isDarkMode, setIsDarkMode] = useState(savedTheme);
+   // // Theme state
+   // const savedTheme = localStorage.getItem('theme') === 'dark';
+   // const [isDarkMode, setIsDarkMode] = useState(savedTheme);
 
-   const fetchUser = async () => {
-      await fetch('http://localhost:8080/auth/current_user', {
-         method: 'GET',
-         credentials: 'include'
-      })
-         .then(res => res.json())
-         .then(data => {
-            setUser(data);
-         })
-         .catch(error => console.log(error));
-   }
+   // const fetchUser = async () => {
+   //    await fetch('http://localhost:8080/auth/current_user', {
+   //       method: 'GET',
+   //       credentials: 'include'
+   //    })
+   //       .then(res => res.json())
+   //       .then(data => {
+   //          setUser(data);
+   //       })
+   //       .catch(error => console.log(error));
+   // }
 
-   const handleThemeChange = () => {
-      setIsDarkMode(!isDarkMode);
-      localStorage.setItem('theme', !isDarkMode ? 'dark' : 'light');
-   };
+   // const handleThemeChange = () => {
+   //    setIsDarkMode(!isDarkMode);
+   //    localStorage.setItem('theme', !isDarkMode ? 'dark' : 'light');
+   // };
 
-   const handleLogout = async () => {
-      await fetch('http://localhost:8080/auth/logout', {
-         method: 'GET',
-         credentials: 'include'
-      })
-         .then(res => setUser(null))
-         .catch(error => console.log(error));
-   }
+   // const handleLogout = async () => {
+   //    await fetch('http://localhost:8080/auth/logout', {
+   //       method: 'GET',
+   //       credentials: 'include'
+   //    })
+   //       .then(res => setUser(null))
+   //       .catch(error => console.log(error));
+   // }
 
-   useEffect(() => {
-      fetchUser();
-      socket.on('chatHistory', (chatHistory) => {
-         console.log(chatHistory);
-         setMessages(chatHistory);
-      });
+   // useEffect(() => {
+   //    fetchUser();
+   //    socket.on('chatHistory', (chatHistory) => {
+   //       console.log(chatHistory);
+   //       setMessages(chatHistory);
+   //    });
 
-      socket.on('receiveMessage', (message) => {
-         setMessages(prevMessages => [...prevMessages, message]);
-      });
+   //    socket.on('receiveMessage', (message) => {
+   //       setMessages(prevMessages => [...prevMessages, message]);
+   //    });
 
-      return () => {
-         socket.off('chatHistory');
-         socket.off('receiveMessage');
-      }
-   }, []);
+   //    return () => {
+   //       socket.off('chatHistory');
+   //       socket.off('receiveMessage');
+   //    }
+   // }, []);
 
 
    return (
-      <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
+      <ThemeProvider theme={darkTheme}>
          <CssBaseline />
          {!user ? <Login /> :
             <>
                <Navbar
-                  onLogout={handleLogout}
-                  onThemeChange={handleThemeChange}
-                  isDarkMode={isDarkMode}
+                  onLogout={() => console.log('logout')}
+                  onThemeChange={() => console.log('toggle')}
+                  isDarkMode={true}
                />
                <Chat user={user} messages={messages} />
             </>

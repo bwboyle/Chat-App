@@ -8,11 +8,14 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 
-export default function Navbar({ onLogout, onThemeChange, isDarkMode }) {
+import { useDispatch } from 'react-redux'
+import { logout } from '../features/authSlice';
 
-   const handleLogout = () => { onLogout(); }
+export default function Navbar() {
+   const dispatch = useDispatch();
 
-   const handleThemeChange = () => { onThemeChange(); }
+   const handleLogout = () => { dispatch(logout()); }
+   const handleThemeChange = () => { console.log('toggle'); }
 
    return (
       <Box sx={{ flexGrow: 1 }}>
@@ -22,7 +25,7 @@ export default function Navbar({ onLogout, onThemeChange, isDarkMode }) {
                   Chat App
                </Typography>
                <IconButton color='inherit' onClick={handleThemeChange}>
-                  {isDarkMode ? <LightModeIcon /> : <DarkModeIcon />}
+                  {<DarkModeIcon />}
                </IconButton>
                <IconButton color='inherit' onClick={handleLogout}>
                   <LogoutIcon />

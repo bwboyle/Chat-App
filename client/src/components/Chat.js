@@ -5,8 +5,6 @@ import AttachFileIcon from '@mui/icons-material/AttachFile';
 import io from 'socket.io-client';
 import MessageBox from './MessageBox';
 
-const socket = io('http://localhost:8080');
-
 export default function Chat({ user, messages }) {
    const [message, setMessage] = useState('');
    const ref = useRef(null);
@@ -22,7 +20,6 @@ export default function Chat({ user, messages }) {
 
    const sendMessage = () => {
       if (message.trim()) {
-         socket.emit('sendMessage', { user, message });
          setMessage('');
       }
    }

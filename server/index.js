@@ -6,11 +6,9 @@ const authRoutes = require('./routes/authRoutes');
 const http = require('http');
 const chatSocket = require('./sockets/chat');
 const { Server } = require('socket.io');
-const passport = require('passport');
 const session = require('express-session');
 
 require('dotenv').config();
-require('./config/passport');
 
 // MongoDB connection
 connectDB();
@@ -22,19 +20,19 @@ app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 app.use(express.json());
 
 // Session middleware
-app.use(session({
-   secret: process.env.SESSION_SECRET,
-   resave: false,
-   saveUninitialized: false
-}));
+// app.use(session({
+//    secret: process.env.SESSION_SECRET,
+//    resave: false,
+//    saveUninitialized: false
+// }));
 
-// Passport middleware
-app.use(passport.initialize());
-app.use(passport.session());
+// // Passport middleware
+// app.use(passport.initialize());
+// app.use(passport.session());
 
 // Routes
-app.use('/api', messageRoutes);
-app.use('/auth', authRoutes);
+app.use('/api/messages', messageRoutes);
+app.use('/api/auth', authRoutes);
 
 // Configure server
 const server = http.createServer(app);
