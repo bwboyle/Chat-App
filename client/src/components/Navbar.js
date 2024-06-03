@@ -25,7 +25,15 @@ export default function Navbar({ onThemeChange, isDarkMode }) {
          credentials: 'include'
       })
          .then((res) => {
-            if (res.status === 200) dispatch(logout());
+            if (res.status === 200) {
+               const savedTheme = localStorage.getItem('isDarkMode');
+               const savedThemeIsDarkMode = savedTheme === 'true';
+               if (savedTheme && !savedThemeIsDarkMode) {
+                  handleThemeChange();
+               }
+               localStorage.clear();
+               dispatch(logout());
+            }
          })
          .catch((err) => console.error(err));
 

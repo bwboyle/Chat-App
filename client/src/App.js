@@ -12,7 +12,10 @@ import { login, update, updateUser } from './features/authSlice';
 export default function App() {
    const user = useSelector((state) => state.auth.user);
    const dispatch = useDispatch();
-   const [isDarkMode, setisDarkMode] = useState(true);
+
+   const savedTheme = localStorage.getItem('isDarkMode');
+   const useDarkMode = savedTheme ? savedTheme === 'true' ? true : false : true;
+   const [isDarkMode, setisDarkMode] = useState(useDarkMode);
 
    useEffect(() => {
       const fetchUser = async () => {
@@ -27,13 +30,21 @@ export default function App() {
       fetchUser();
    }, []);
 
+   const changeTheme = () => {
+      localStorage.setItem('isDarkMode', JSON.stringify(!isDarkMode))
+      setisDarkMode(!isDarkMode);
+      // const theme = !isDarkMode ? 'dark' : 'light'
+      // localStorage.setItem('theme', JSON.stringify(theme));
+
+   }
+
    return (
       <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
          <CssBaseline />
          <>
             <Box sx={{ flexGrow: 1 }}>
                <Navbar
-                  onThemeChange={() => setisDarkMode(!isDarkMode)}
+                  onThemeChange={changeTheme}
                   isDarkMode={isDarkMode}
                />
                {!user ? <Login /> : <Chat />}
