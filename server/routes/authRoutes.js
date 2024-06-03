@@ -1,63 +1,26 @@
 const express = require('express');
-// const authController = require('../controllers/authController');
-const { OAuth2Client } = require('google-auth-library');
-const User = require('../models/User');
-
-const client = new OAuth2Client();
+const passport = require('passport');
 const router = express.Router();
 
-// Middleware for verifing Google OAuth credential
-const verifyToken = async (token) => {
-   try {
-      const ticket = await client.verifyIdToken({
-         idToken: token,
-         audience: process.env.GOOGLE_CLIENT_ID,
-      });
-      return [ticket.getUserId(), ticket.getPayload()];
-   } catch (error) {
-      throw new Error('Error validating credential: ', error);
-   }
-}
-
-router.get('/current_user', async (req, res) => {
-   try {
-      // Get access token from request headers
-      const token = req.headers.authorization.split(' ')[1];
-      const [id, userData] = await verifyToken(token);
-
-      let user = await User.findOne({ googleId: id });
-      if (!user) {
-         user = await User.create({
-            googleId: id,
-            displayName: userData.name,
-            email: userData.email,
-            photoURL: userData.picture,
-         });
-      }
-
-      res.status(200).json({ user: user });
-
-   } catch (error) {
-      res.status(401).json({ message: 'Unauthorized' });
-   }
-
-
-   // Store user in database if valid token
-
-
-   // console.log(decodedToken);
-   // await verifyToken(token)
-   //    .then((decodedToken) => {
-   //       console.log(decodedToken);
-   //       res.status(200).json('done');
-   //    })
-   //    .catch((err) => res.status(500).json({ error: err }));
-
+// Google Auth route
+router.get('/google', passport.authenticate('google'), (req, res) => {
+   req.login(req.user, err => { if (err) console.error(err); });
+   res.redirect(process.env.CLIENT_URL);
 });
 
-// router.get('/google', authController.googleAuth);
-// router.get('/google/callback', authController.googleAuthCallback, authController.authRedirect);
-// router.get('/logout', authController.logout);
-// router.get('/current_user', authController.currentUser);
+// Returns the currently signed in user
+router.get('/user', (req, res) => {
+   if (req.isAuthenticated()) {
+      res.status(200).json({ user: req.user });
+   } else {
+      res.status(200).json({ user: null });
+   }
+});
+
+// Logout of session
+router.get('/logout', (req, res) => {
+   req.logout(err => { if (err) res.status(500).json({ error: err }) });
+   res.status(200).json({ message: "Logout successfull" })
+});
 
 module.exports = router;

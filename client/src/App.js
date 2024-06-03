@@ -6,12 +6,27 @@ import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { lightTheme, darkTheme } from './theme';
 
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { login, update, updateUser } from './features/authSlice';
 
 export default function App() {
    const user = useSelector((state) => state.auth.user);
-   console.log(user);
+   const dispatch = useDispatch();
    const [messages, setMessages] = useState([]);
+
+   useEffect(() => {
+      const fetchUser = async () => {
+         await fetch('http://localhost:8080/api/auth/user', {
+            method: 'GET',
+            credentials: 'include'
+         })
+            .then(res => res.json())
+            .then(data => dispatch(login(data)))
+            .catch(err => console.error(err))
+      };
+      fetchUser();
+   }, [])
+
 
    // // Theme state
    // const savedTheme = localStorage.getItem('theme') === 'dark';
@@ -23,9 +38,7 @@ export default function App() {
    //       credentials: 'include'
    //    })
    //       .then(res => res.json())
-   //       .then(data => {
-   //          setUser(data);
-   //       })
+   //       .then(data => console.log(data))
    //       .catch(error => console.log(error));
    // }
 

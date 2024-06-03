@@ -7,8 +7,11 @@ const http = require('http');
 const chatSocket = require('./sockets/chat');
 const { Server } = require('socket.io');
 const session = require('express-session');
+const bodyParser = require('body-parser');
+const passport = require('passport');
 
 require('dotenv').config();
+require('./config/passport');
 
 // MongoDB connection
 connectDB();
@@ -18,17 +21,19 @@ const app = express();
 // Middleware
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // Session middleware
-// app.use(session({
-//    secret: process.env.SESSION_SECRET,
-//    resave: false,
-//    saveUninitialized: false
-// }));
+app.use(session({
+   secret: process.env.SESSION_SECRET,
+   resave: false,
+   saveUninitialized: false,
+}));
 
-// // Passport middleware
-// app.use(passport.initialize());
-// app.use(passport.session());
+// Passport middleware
+app.use(passport.initialize());
+app.use(passport.session());
+console.log('Passport session initialized')
 
 // Routes
 app.use('/api/messages', messageRoutes);

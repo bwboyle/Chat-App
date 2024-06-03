@@ -14,7 +14,12 @@ import { logout } from '../features/authSlice';
 export default function Navbar() {
    const dispatch = useDispatch();
 
-   const handleLogout = () => { dispatch(logout()); }
+   const handleLogout = async () => {
+      await fetch('http://localhost:8080/api/auth/logout')
+         .then((res) => { if (res.ok) dispatch(logout()); })
+         .catch((err) => console.error(err));
+
+   }
    const handleThemeChange = () => { console.log('toggle'); }
 
    return (
