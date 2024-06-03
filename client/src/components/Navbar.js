@@ -15,8 +15,13 @@ export default function Navbar() {
    const dispatch = useDispatch();
 
    const handleLogout = async () => {
-      await fetch('http://localhost:8080/api/auth/logout')
-         .then((res) => { if (res.ok) dispatch(logout()); })
+      await fetch('http://localhost:8080/api/auth/logout', {
+         method: 'POST',
+         credentials: 'include'
+      })
+         .then((res) => {
+            if (res.status === 200) dispatch(logout());
+         })
          .catch((err) => console.error(err));
 
    }

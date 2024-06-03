@@ -2,6 +2,8 @@ import React from 'react'
 import { Button, Box, Typography } from '@mui/material';
 import GoogleIcon from '@mui/icons-material/Google';
 
+import { GoogleLoginButton } from "react-social-login-buttons";
+
 export default function Login() {
    const handleLogin = () => {
       // Navigate to Google Auth Page
@@ -24,14 +26,22 @@ export default function Login() {
          {/* <Typography variant="subtitle1" component="div" p={4} color='white'>
             To start chatting, please log in with your Google account.
          </Typography> */}
-         <Button
+         {/* <Button
             variant="contained"
             startIcon={<GoogleIcon />}
             size="large"
             onClick={handleLogin}
          >
             Continue with Google
-         </Button>
+         </Button> */}
+         <Box>
+            <GoogleLoginButton
+               onClick={handleLogin}
+               align='center'
+               style={{ borderRadius: '50px', padding: '20px' }}
+            />
+         </Box>
+
       </Box>
    )
 }

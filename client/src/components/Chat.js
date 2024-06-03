@@ -5,16 +5,24 @@ import AttachFileIcon from '@mui/icons-material/AttachFile';
 import io from 'socket.io-client';
 import MessageBox from './MessageBox';
 
-export default function Chat({ user, messages }) {
+export default function Chat() {
+   const user = null;
+   const messages = [];
    const [message, setMessage] = useState('');
    const ref = useRef(null);
 
    // Automatically scroll to bottom of chat list
    useEffect(() => {
-      const container = ref.current;
-      if (container && messages.length > 0) {
-         container.scrollTop = container.scrollHeight;
-      }
+      const fetchMessages = async () => {
+         await fetch('http://localhost:8080/api/messages/all', {
+            method: 'GET',
+            credentials: 'include'
+         })
+      };
+      // const container = ref.current;
+      // if (container && messages.length > 0) {
+      //    container.scrollTop = container.scrollHeight;
+      // }
    }, [messages])
 
 

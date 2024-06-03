@@ -4,7 +4,7 @@ const router = express.Router();
 
 // Google Auth route
 router.get('/google', passport.authenticate('google'), (req, res) => {
-   req.login(req.user, err => { if (err) console.error(err); });
+   req.login(req.user, err => { if (err) return next(err) });
    res.redirect(process.env.CLIENT_URL);
 });
 
@@ -18,9 +18,11 @@ router.get('/user', (req, res) => {
 });
 
 // Logout of session
-router.get('/logout', (req, res) => {
-   req.logout(err => { if (err) res.status(500).json({ error: err }) });
-   res.status(200).json({ message: "Logout successfull" })
+router.post('/logout', (req, res) => {
+   req.logout((err) => {
+      if (err) return next(err);
+      res.status(200).json({ message: "Logout successful" })
+   });
 });
 
 module.exports = router;
