@@ -13,16 +13,17 @@ export default function MessageBox({ msg, user }) {
          alignSelf: msg.user.googleId === user.googleId ? 'flex-end' : 'flex-start',
          flexGrow: 0,
          maxWidth: '80%',
-         padding: '12px',
          borderRadius: 5,
-         marginBottom: '20px',
          bgcolor: msg.user.googleId === user.googleId ? 'primary.main' : 'secondary.main',
-         color: msg.user.googleId === user.googleId ? 'white' : 'default'
+         color: 'primary.contrastText',
+         p: 2,
+         my: 1
+         // color: msg.user.googleId === user.googleId ? 'white' : 'default'
       }}>
          <Box sx={{
             display: 'flex',
             flexDirection: 'column',
-            marginX: '12px',
+            mx: 2
          }}>
             <Typography
                variant="subtitle1"
@@ -33,7 +34,7 @@ export default function MessageBox({ msg, user }) {
             <Typography
                variant="caption"
                component="div"
-               sx={{ color: msg.user.googleId === user.googleId ? 'grey.300' : 'default' }}
+               sx={{ color: msg.user.googleId === user.googleId ? 'primary.contrastText' : 'default' }}
             >
                <Moment format="MMMM Do, h:mm a">{timestamp}</Moment>
             </Typography>
@@ -41,7 +42,7 @@ export default function MessageBox({ msg, user }) {
          <Avatar
             alt={msg.user.dislayName}
             src={msg.user.photoURL}
-            sx={{ width: 32, height: 32 }}
+         // sx={{ width: 32, height: 32 }}
          />
       </Box >
    )

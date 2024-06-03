@@ -5,13 +5,18 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/Button';
 import LogoutIcon from '@mui/icons-material/Logout';
+import LoginIcon from '@mui/icons-material/Login';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
+import MenuIcon from '@mui/icons-material/Menu';
 
-import { useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { logout } from '../features/authSlice';
+import Button from '@mui/material/Button';
+import { Icon } from '@mui/material';
 
-export default function Navbar() {
+export default function Navbar({ onThemeChange, isDarkMode }) {
+   const user = useSelector((state) => state.auth.user);
    const dispatch = useDispatch();
 
    const handleLogout = async () => {
@@ -25,23 +30,43 @@ export default function Navbar() {
          .catch((err) => console.error(err));
 
    }
-   const handleThemeChange = () => { console.log('toggle'); }
+   const handleThemeChange = () => { onThemeChange(); }
+
+   const ActionButton = ({ icon, onClick }) => {
+      return (
+         <IconButton
+            size='large'
+            color='inherit'
+            edge='start'
+            onClick={onClick}
+            sx={{
+               borderRadius: '50%',
+               p: 2,
+               mr: 2
+            }}
+         >
+            {icon}
+         </IconButton>
+      );
+   }
 
    return (
-      <Box sx={{ flexGrow: 1 }}>
-         <AppBar position="static" elevation={0} sx={{ borderBottom: 'none' }}>
-            <Toolbar>
-               <Typography variant="h6" component="div" sx={{ flexGrow: 1, marginLeft: '12px' }}>
-                  Chat App
-               </Typography>
-               <IconButton color='inherit' onClick={handleThemeChange}>
-                  {<DarkModeIcon />}
-               </IconButton>
-               <IconButton color='inherit' onClick={handleLogout}>
-                  <LogoutIcon />
-               </IconButton>
-            </Toolbar>
-         </AppBar>
-      </Box>
+      <AppBar position='static'>
+         <Toolbar>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1, ml: 2 }}>
+               Chat App
+            </Typography>
+            {user && <Box>
+               <ActionButton
+                  icon={isDarkMode ? <LightModeIcon /> : <DarkModeIcon />}
+                  onClick={handleThemeChange}
+               />
+               <ActionButton
+                  icon={<LogoutIcon />}
+                  onClick={handleLogout}
+               />
+            </Box>}
+         </Toolbar>
+      </AppBar >
    );
 }

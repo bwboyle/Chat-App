@@ -1,8 +1,6 @@
 import React from 'react'
 import { Button, Box, Typography } from '@mui/material';
-import GoogleIcon from '@mui/icons-material/Google';
-
-import { GoogleLoginButton } from "react-social-login-buttons";
+import { GoogleLoginButton } from 'react-social-login-buttons';
 
 export default function Login() {
    const handleLogin = () => {
@@ -14,34 +12,35 @@ export default function Login() {
       <Box sx={{
          display: 'flex',
          flexDirection: 'column',
-         alignItems: 'center',
-         justifyContent: 'center',
-         height: '100vh',
-         width: '100vw',
-         backgroundImage: "url('/images/background.jpg')",
+         height: '92vh',
+         width: '100vw'
       }}>
-         <Typography variant="h4" component="div" color='white' mb={4}>
-            Welcome to Chat App!
-         </Typography>
-         {/* <Typography variant="subtitle1" component="div" p={4} color='white'>
-            To start chatting, please log in with your Google account.
-         </Typography> */}
-         {/* <Button
-            variant="contained"
-            startIcon={<GoogleIcon />}
-            size="large"
-            onClick={handleLogin}
-         >
-            Continue with Google
-         </Button> */}
-         <Box>
-            <GoogleLoginButton
-               onClick={handleLogin}
-               align='center'
-               style={{ borderRadius: '50px', padding: '20px' }}
-            />
+         <Box sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            flexGrow: 1,
+            alignItems: 'center',
+            justifyContent: 'space-evenly',
+         }}>
+            <Typography variant="h4" component="div">
+               Welcome to Chat App!
+            </Typography>
+            <Typography variant="subtitle1" component="div">
+               To start chatting, please log in with your Google account.
+            </Typography>
+            <Box>
+               <GoogleLoginButton
+                  onClick={handleLogin}
+               />
+            </Box>
          </Box>
-
+         <Box sx={{
+            display: 'flex',
+            flexGrow: 1,
+            backgroundImage: "url('/Wave.svg')",
+            backgroundRepeat: 'no-repeat',
+            backgroundSize: 'cover',
+         }} />
       </Box>
    )
 }

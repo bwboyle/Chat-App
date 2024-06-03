@@ -10,7 +10,8 @@ import { setMessages, addMessage } from '../features/chatSlice';
 
 const socket = io('http://localhost:8080');
 
-export default function Chat({ user }) {
+export default function Chat() {
+   const user = useSelector((state) => state.auth.user);
    const messages = useSelector((state) => state.chat.messages);
    const dispatch = useDispatch();
 
@@ -60,27 +61,28 @@ export default function Chat({ user }) {
 
    return (
       <Box
-         mx={4}
          sx={{
             display: 'flex',
             flexDirection: 'column',
             overflowY: 'hidden',
+            height: '90vh',
+            mx: 4
          }}>
 
          {/* Chat history */}
          < Box
             ref={ref}
-            my={4}
             sx={{
                display: 'flex',
                flexDirection: 'column',
-               height: '70vh',
+               flexGrow: 1,
                overflowY: 'scroll',
                '::-webkit-scrollbar': { // Hide scrollbar
                   display: 'none',
                },
                msOverflowStyle: 'none',  // IE and Edge
                scrollbarWidth: 'none',   // Firefox
+               my: 2
             }}
          >
             {
@@ -91,34 +93,37 @@ export default function Chat({ user }) {
          </Box >
 
          {/* Message input */}
-         < TextField
-            label='Type a message...'
-            variant='filled'
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' ? sendMessage() : null}
-            InputProps={{
-               endAdornment: (
-                  <>
-                     <InputAdornment position='end'>
-                        <IconButton>
-                           <AttachFileIcon />
-                        </IconButton>
-                     </InputAdornment>
-                     <InputAdornment position='end'>
-                        <IconButton onClick={sendMessage}>
-                           <SendIcon />
-                        </IconButton>
-                     </InputAdornment>
-                  </>
-               ),
-               disableUnderline: true,
-               sx: {
-                  borderRadius: '20px',  // Adjust the value as needed
-               },
-            }}
-            sx={{ borderRadius: '20px' }}
-         />
+         <Box sx={{ flexGrow: 1 }}>
+            < TextField
+               label='Type a message...'
+               variant='filled'
+               value={message}
+               onChange={(e) => setMessage(e.target.value)}
+               onKeyDown={(e) => e.key === 'Enter' ? sendMessage() : null}
+               InputProps={{
+                  endAdornment: (
+                     <>
+                        <InputAdornment position='end'>
+                           <IconButton>
+                              <AttachFileIcon />
+                           </IconButton>
+                        </InputAdornment>
+                        <InputAdornment position='end'>
+                           <IconButton onClick={sendMessage}>
+                              <SendIcon />
+                           </IconButton>
+                        </InputAdornment>
+                     </>
+                  ),
+                  disableUnderline: true,
+                  sx: {
+                     borderRadius: '20px',  // Adjust the value as needed
+                  },
+               }}
+               sx={{ borderRadius: '20px', mb: 2 }}
+               fullWidth
+            />
+         </Box>
       </Box >
    )
 }

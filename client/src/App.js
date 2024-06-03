@@ -3,7 +3,7 @@ import Chat from './components/Chat'
 import Login from './components/Login';
 import Navbar from './components/Navbar';
 import { ThemeProvider } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
+import { Box, CssBaseline } from '@mui/material';
 import { lightTheme, darkTheme } from './theme';
 
 import { useSelector, useDispatch } from 'react-redux'
@@ -12,6 +12,7 @@ import { login, update, updateUser } from './features/authSlice';
 export default function App() {
    const user = useSelector((state) => state.auth.user);
    const dispatch = useDispatch();
+   const [isDarkMode, setisDarkMode] = useState(true);
 
    useEffect(() => {
       const fetchUser = async () => {
@@ -24,23 +25,33 @@ export default function App() {
             .catch(err => console.error(err))
       };
       fetchUser();
-   }, [])
-
-   console.log(user);
+   }, []);
 
    return (
-      <ThemeProvider theme={darkTheme}>
+      <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
          <CssBaseline />
-         {!user ? <Login /> :
+         <>
+            <Box sx={{ flexGrow: 1 }}>
+               <Navbar
+                  onThemeChange={() => setisDarkMode(!isDarkMode)}
+                  isDarkMode={isDarkMode}
+               />
+               {!user ? <Login /> : <Chat />}
+            </Box>
+            {/* <Navbar
+               onThemeChange={() => setisDarkMode(!isDarkMode)}
+               isDarkMode={isDarkMode}
+            /> */}
+         </>
+         {/* {!user ? <Login /> :
             <>
                <Navbar
-                  onLogout={() => console.log('logout')}
-                  onThemeChange={() => console.log('toggle')}
-                  isDarkMode={true}
+                  onThemeChange={() => setisDarkMode(!isDarkMode)}
+                  isDarkMode={isDarkMode}
                />
                <Chat user={user} />
             </>
-         }
+         } */}
       </ThemeProvider>
    )
 }
