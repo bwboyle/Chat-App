@@ -26,11 +26,13 @@ export default function Navbar({ onThemeChange, isDarkMode }) {
       })
          .then((res) => {
             if (res.status === 200) {
+               // Make sure dark theme is selected before logging out
                const savedTheme = localStorage.getItem('isDarkMode');
                const savedThemeIsDarkMode = savedTheme === 'true';
                if (savedTheme && !savedThemeIsDarkMode) {
                   handleThemeChange();
                }
+               // Clear local store and log out of session
                localStorage.clear();
                dispatch(logout());
             }
