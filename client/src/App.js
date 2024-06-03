@@ -38,7 +38,7 @@ export default function App() {
                   onThemeChange={() => console.log('toggle')}
                   isDarkMode={true}
                />
-               <Chat />
+               <Chat user={user} />
             </>
          }
       </ThemeProvider>

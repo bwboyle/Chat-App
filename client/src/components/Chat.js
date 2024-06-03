@@ -5,31 +5,57 @@ import AttachFileIcon from '@mui/icons-material/AttachFile';
 import io from 'socket.io-client';
 import MessageBox from './MessageBox';
 
-export default function Chat() {
-   const user = null;
-   const messages = [];
+import { useSelector, useDispatch } from 'react-redux'
+import { setMessages, addMessage } from '../features/chatSlice';
+
+const socket = io('http://localhost:8080');
+
+export default function Chat({ user }) {
+   const messages = useSelector((state) => state.chat.messages);
+   const dispatch = useDispatch();
+
    const [message, setMessage] = useState('');
    const ref = useRef(null);
 
-   // Automatically scroll to bottom of chat list
+   useEffect(() => {
+      // Scroll to bottom of message container
+      const container = ref.current;
+      if (container && messages.length > 0) {
+         container.scrollTop = container.scrollHeight;
+      }
+   }, [messages])
+
+
    useEffect(() => {
       const fetchMessages = async () => {
          await fetch('http://localhost:8080/api/messages/all', {
             method: 'GET',
             credentials: 'include'
          })
+            .then((res) => res.json())
+            .then((data) => {
+               dispatch(setMessages(data.messages));
+            })
+            .catch((err) => console.error(err));
       };
-      // const container = ref.current;
-      // if (container && messages.length > 0) {
-      //    container.scrollTop = container.scrollHeight;
-      // }
-   }, [messages])
+      fetchMessages();
 
+      socket.on('receiveMessage', (message) => {
+         dispatch(addMessage(message));
+      });
 
-   const sendMessage = () => {
-      if (message.trim()) {
-         setMessage('');
+      return () => {
+         socket.off('receiveMessage')
       }
+   }, []);
+
+
+   const sendMessage = async () => {
+      if (message.trim()) {
+         socket.emit('sendMessage', { user, message });
+         // scrollToBottom();
+      }
+      setMessage('')
    }
 
    return (
